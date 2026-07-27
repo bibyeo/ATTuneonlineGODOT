@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://8i308gcvvfhv"]
+
+[ext_resource type="Texture2D" uid="uid://jsk3om3undo1" path="res://Assets/Screen 1/background_horizontal.png" id="1_a2231"]
+[ext_resource type="Texture2D" uid="uid://2vyhagnalc5c" path="res://Assets/Screen 1/island.png" id="2_6mw8b"]
+[ext_resource type="Texture2D" uid="uid://ciu6332fs7hnq" path="res://Assets/Screen 1/space_mode.png" id="2_ey7n4"]
+[ext_resource type="Texture2D" uid="uid://c6i420chbjphs" path="res://Assets/Screen 1/sky_mode.png" id="3_6mw8b"]
+[ext_resource type="Script" uid="uid://cdypnl4jetrx0" path="res://Scenes/SpaceModeButton.gd" id="4_anxsw"]
+[ext_resource type="Texture2D" uid="uid://cjxvrp8a8iflb" path="res://Assets/Screen 1/fantasy_mode.png" id="4_kehkj"]
+[ext_resource type="Texture2D" uid="uid://c75eso0v7yasu" path="res://Assets/Screen 1/jurassic_mode.png" id="5_anxsw"]
+[ext_resource type="Texture2D" uid="uid://btt1e58t05qdg" path="res://Assets/Screen 1/balloon.png" id="7_kehkj"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_ogpyo"]
+
+[node name="StartScreen" type="Control" unique_id=361717128]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StartScreenBackground" type="TextureRect" parent="." unique_id=239682956]
+layout_mode = 0
+offset_right = 1350.0
+offset_bottom = 1080.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("1_a2231")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=538022019]
+layout_mode = 0
+offset_left = 523.0
+offset_top = 473.0
+offset_right = 773.0
+offset_bottom = 788.0
+texture = ExtResource("2_6mw8b")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="SpaceModeButton" type="TextureButton" parent="." unique_id=1290683797]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 34.0
+offset_right = 630.0
+offset_bottom = 184.0
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ogpyo")
+texture_normal = ExtResource("2_ey7n4")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("4_anxsw")
+
+[node name="SkyModeButton" type="TextureButton" parent="." unique_id=218976941]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 184.0
+offset_right = 630.0
+offset_bottom = 334.0
+disabled = true
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ogpyo")
+texture_normal = ExtResource("3_6mw8b")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="FantasyModeButton" type="TextureButton" parent="." unique_id=473262637]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 334.0
+offset_right = 630.0
+offset_bottom = 484.0
+disabled = true
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ogpyo")
+texture_normal = ExtResource("4_kehkj")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="JurassicModeButton" type="TextureButton" parent="." unique_id=2030176066]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 484.0
+offset_right = 630.0
+offset_bottom = 634.0
+disabled = true
+toggle_mode = true
+button_group = SubResource("ButtonGroup_ogpyo")
+texture_normal = ExtResource("5_anxsw")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=918948419]
+layout_mode = 0
+offset_left = 661.0
+offset_top = 412.0
+offset_right = 861.0
+offset_bottom = 562.0
+texture = ExtResource("7_kehkj")
+expand_mode = 1
+stretch_mode = 4
+
+[connection signal="button_down" from="SpaceModeButton" to="SpaceModeButton" method="_on_button_down"]
