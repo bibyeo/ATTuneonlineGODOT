@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://btt1e58t05qdg" path="res://Assets/Screen 1/balloon.png" id="8_vrply"]
 [ext_resource type="Texture2D" uid="uid://chccbl6n06aug" path="res://Assets/Screen 1/ParentalControlsButton.png" id="9_pej5c"]
 [ext_resource type="Script" uid="uid://c3bvs8y8s1d6l" path="res://Scenes/parental_controls_button.gd" id="10_d1pnq"]
+[ext_resource type="Script" uid="uid://c3e0f8k3m5vx0" path="res://Scenes/garrage_button.gd" id="11_vt3nd"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_ogpyo"]
 
@@ -113,6 +114,16 @@ ignore_texture_size = true
 stretch_mode = 4
 script = ExtResource("10_d1pnq")
 
+[node name="GarrageButton" type="Button" parent="." unique_id=725809953]
+layout_mode = 0
+offset_left = 646.0
+offset_top = 33.0
+offset_right = 786.0
+offset_bottom = 122.0
+text = "Garrage"
+script = ExtResource("11_vt3nd")
+
 [connection signal="button_down" from="SpaceModeButton" to="SpaceModeButton" method="_on_button_down"]
 [connection signal="button_down" from="ParentalControlsButton" to="SpaceModeButton" method="_on_parental_controls_button_down"]
 [connection signal="button_down" from="ParentalControlsButton" to="ParentalControlsButton" method="_on_button_down"]
+[connection signal="button_down" from="GarrageButton" to="GarrageButton" method="_on_button_down"]

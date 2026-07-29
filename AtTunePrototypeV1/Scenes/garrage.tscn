@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://uviet5m2fw65"]
+
+[ext_resource type="Script" uid="uid://dhs62a6iwbs5l" path="res://Scenes/garrage.gd" id="1_ubrd6"]
+
+[node name="Garrage" type="Control" unique_id=1851975263]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_ubrd6")
+
+[node name="LeftButton" type="Button" parent="." unique_id=1075516696]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 274.0
+offset_right = 250.0
+offset_bottom = 374.0
+text = "<
+"
+
+[node name="RightButton" type="Button" parent="." unique_id=1305535879]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 274.0
+offset_right = 710.0
+offset_bottom = 374.0
+text = ">
+"
+
+[connection signal="button_down" from="LeftButton" to="." method="_on_left_button_button_down"]
+[connection signal="button_down" from="RightButton" to="." method="_on_right_button_button_down"]
