@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://ufle0dv56nuh"]
 
+[ext_resource type="Texture2D" uid="uid://brnta8mgumok" path="res://Assets/Garage/vantage.png" id="1_aqsg4"]
+
 [node name="ship4" type="Control" unique_id=1299161410]
 layout_mode = 3
 anchors_preset = 15
@@ -9,8 +11,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="Label" type="Label" parent="." unique_id=1690794755]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1501069922]
 layout_mode = 0
 offset_right = 40.0
-offset_bottom = 23.0
-text = "Ship4"
+offset_bottom = 40.0
+texture = ExtResource("1_aqsg4")

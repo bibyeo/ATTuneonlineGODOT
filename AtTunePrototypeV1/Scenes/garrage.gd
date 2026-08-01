@@ -4,10 +4,11 @@ var ship1 = preload("res://Scenes/ship_1.tscn");
 var ship2 = preload("res://Scenes/ship_2.tscn");
 var ship3 = preload("res://Scenes/ship_3.tscn");
 var ship4 = preload("res://Scenes/ship_4.tscn");
-var ships = [ship1,ship2,ship3,ship4]
+var ship5 = preload("res://Scenes/ship_5.tscn")
+var ships = [ship1,ship2,ship3,ship4,ship5]
 var index = 0;
-var numShips = 4;
-var shipPosition = Vector2 (0,0);
+var numShips = 5;
+var shipPosition = Vector2 (283,200);
 var currentShip;
 
 func _ready() -> void:
@@ -29,3 +30,7 @@ func _on_left_button_button_down() -> void:
 func _on_right_button_button_down() -> void:
 	index = (index + 1) % numShips
 	newShip()
+
+
+func _on_button_down() -> void:
+	pass # Replace with function body.

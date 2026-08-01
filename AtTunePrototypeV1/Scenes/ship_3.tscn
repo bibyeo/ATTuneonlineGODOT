@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://c5c88sp2avv52"]
 
+[ext_resource type="Texture2D" uid="uid://diq83csslvlt3" path="res://Assets/Garage/cinder.png" id="1_8lev6"]
+
 [node name="ship3" type="Control" unique_id=2140701280]
 layout_mode = 3
 anchors_preset = 15
@@ -9,8 +11,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="Label" type="Label" parent="." unique_id=2022604910]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=513973269]
 layout_mode = 0
 offset_right = 40.0
-offset_bottom = 23.0
-text = "Ship3"
+offset_bottom = 40.0
+texture = ExtResource("1_8lev6")

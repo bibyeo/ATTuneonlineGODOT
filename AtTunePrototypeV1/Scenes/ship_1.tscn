@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://s5qcqehoa5ob"]
 
+[ext_resource type="Texture2D" uid="uid://5xp22xn4240y" path="res://Assets/Garage/celestia.png" id="1_ur2av"]
+
 [node name="Ship1" type="Control" unique_id=1866559615]
 layout_mode = 3
 anchors_preset = 15
@@ -9,8 +11,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="Label" type="Label" parent="." unique_id=1398013976]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1771190504]
 layout_mode = 0
 offset_right = 40.0
-offset_bottom = 23.0
-text = "Ship1"
+offset_bottom = 40.0
+texture = ExtResource("1_ur2av")
