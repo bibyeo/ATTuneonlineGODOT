@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://dfgeuqof6oj03"]
+
+[ext_resource type="Texture2D" uid="uid://dhx1q3n437jpc" path="res://Assets/BOX.png" id="1_qai44"]
+[ext_resource type="Script" uid="uid://c5htpktyr14gk" path="res://Scenes/parental_control_pop_up.gd" id="1_w7618"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0i810"]
+font_size = 20
+font_color = Color(0, 0, 0, 1)
+outline_color = Color(0, 0, 0, 1)
+
+[node name="ParentalControlPopUp" type="Control" unique_id=1792293627]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_w7618")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=711163707]
+layout_mode = 0
+offset_left = 155.0
+offset_top = 174.0
+offset_right = 655.0
+offset_bottom = 474.0
+texture = ExtResource("1_qai44")
+
+[node name="PasswordText" type="Label" parent="TextureRect" unique_id=1892862197]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 30.0
+offset_right = 114.0
+offset_bottom = 58.0
+text = "Password:"
+label_settings = SubResource("LabelSettings_0i810")
+
+[node name="LineEdit" type="LineEdit" parent="TextureRect" unique_id=735744550]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 66.0
+offset_right = 486.0
+offset_bottom = 97.0
+
+[node name="Exit" type="Button" parent="." unique_id=772295314]
+layout_mode = 0
+offset_left = 626.0
+offset_top = 183.0
+offset_right = 644.0
+offset_bottom = 214.0
+text = "X
+"
+
+[node name="EnterParentMode" type="Button" parent="." unique_id=1745571419]
+layout_mode = 0
+offset_left = 373.0
+offset_top = 362.0
+offset_right = 444.0
+offset_bottom = 393.0
+text = "Confirm
+"
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=1948941913]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="text_changed" from="TextureRect/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="button_down" from="Exit" to="." method="_on_exit_button_down"]
+[connection signal="button_down" from="EnterParentMode" to="." method="_on_enter_parent_mode_button_down"]

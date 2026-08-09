@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scenes/parent_mode.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 3/back.png" id="2_back"]
+
+[node name="ParentMode" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="ExitButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 65.0
+ignore_texture_size = true
+stretch_mode = 5
+texture_normal = ExtResource("2_back")
+
+[connection signal="button_down" from="ExitButton" to="." method="_on_exit_button_down"]

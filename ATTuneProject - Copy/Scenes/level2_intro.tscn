@@ -1,0 +1,72 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scenes/level2_intro.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 2/background_horizontal.png" id="2_bg"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 2/lv2.png" id="3_lv2"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 3/start.png" id="4_start"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 3/back.png" id="5_back"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/Furore.otf" id="6_font"]
+
+[node name="Level2Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 810.0
+offset_bottom = 648.0
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Tile" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 296.0
+offset_top = 150.0
+offset_right = 514.0
+offset_bottom = 362.0
+texture = ExtResource("3_lv2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Hint" type="Label" parent="."]
+layout_mode = 0
+offset_left = 105.0
+offset_top = 390.0
+offset_right = 705.0
+offset_bottom = 452.0
+theme_override_colors/font_color = Color(0.8, 0.88, 1, 1)
+theme_override_fonts/font = ExtResource("6_font")
+theme_override_font_sizes/font_size = 18
+text = "Listen to the four systems. When one starts to sound wrong,
+tap its button to fix it before you lose a life."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 284.0
+offset_top = 490.0
+offset_right = 526.0
+offset_bottom = 585.0
+texture_normal = ExtResource("4_start")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="BackButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 65.0
+ignore_texture_size = true
+stretch_mode = 5
+texture_normal = ExtResource("5_back")
+
+[connection signal="button_down" from="StartButton" to="." method="_on_start_button_down"]
+[connection signal="button_down" from="BackButton" to="." method="_on_back_button_down"]
