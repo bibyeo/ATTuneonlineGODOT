@@ -67,12 +67,19 @@ script = ExtResource("4_n0emx")
 
 [node name="ExitButton" type="TextureButton" parent="." unique_id=1102424931]
 layout_mode = 0
+<<<<<<< HEAD:ATTuneProject - Copy/Scenes/space_level_select.tscn
 offset_left = 12.0
 offset_top = 8.0
 offset_right = 72.0
 offset_bottom = 65.0
 ignore_texture_size = true
 stretch_mode = 5
+=======
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 91.0
+offset_bottom = 82.0
+>>>>>>> f4e7b5d30ea0bef1d19bd58353e18996654ca53b:ATTuneProject/Scenes/space_level_select.tscn
 texture_normal = ExtResource("8_twenu")
 script = ExtResource("9_0ywan")
 
