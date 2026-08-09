@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://c3fkri40v0box" path="res://Assets/Screen 2/levels.png" id="2_n0emx"]
 [ext_resource type="Texture2D" uid="uid://db82js7th3tmy" path="res://Assets/Screen 2/lv1.png" id="3_lj281"]
 [ext_resource type="Script" uid="uid://c3e0f8k3m5vx0" path="res://Scenes/garrage_button.gd" id="4_n0emx"]
+[ext_resource type="Script" path="res://Scenes/level1_button.gd" id="5_lvl1"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 2/lv2.png" id="7_lv2tex"]
+[ext_resource type="Script" path="res://Scenes/level2_button.gd" id="8_lvl2"]
 
 [node name="SpaceLevelSelect" type="Control" unique_id=62907779]
 layout_mode = 3
@@ -38,6 +41,18 @@ offset_bottom = 281.0
 scale = Vector2(0.61, 0.61)
 texture_normal = ExtResource("3_lj281")
 stretch_mode = 4
+script = ExtResource("5_lvl1")
+
+[node name="Level2Button" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 69.0
+offset_right = 533.0
+offset_bottom = 281.0
+scale = Vector2(0.61, 0.61)
+texture_normal = ExtResource("7_lv2tex")
+stretch_mode = 4
+script = ExtResource("8_lvl2")
 
 [node name="GarageButton" type="Button" parent="." unique_id=735196061]
 layout_mode = 0
@@ -48,4 +63,6 @@ offset_bottom = 430.0
 flat = true
 script = ExtResource("4_n0emx")
 
+[connection signal="button_down" from="Level2Button" to="Level2Button" method="_on_button_down"]
+[connection signal="button_down" from="Level1Button" to="Level1Button" method="_on_button_down"]
 [connection signal="button_down" from="GarageButton" to="GarageButton" method="_on_button_down"]

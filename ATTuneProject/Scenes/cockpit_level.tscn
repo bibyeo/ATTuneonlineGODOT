@@ -1,0 +1,198 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scenes/cockpit_level.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Level2/cockpit.png" id="2_cockpit"]
+[ext_resource type="Texture2D" path="res://Assets/Level2/navigation.png" id="3_nav"]
+[ext_resource type="Texture2D" path="res://Assets/Level2/engine.png" id="4_engine"]
+[ext_resource type="Texture2D" path="res://Assets/Level2/fuel.png" id="5_fuel"]
+[ext_resource type="Texture2D" path="res://Assets/Level2/oxygen.png" id="6_oxygen"]
+[ext_resource type="Texture2D" path="res://Assets/Screen 3/back.png" id="7_back"]
+[ext_resource type="AudioStream" path="res://Assets/Sound/Level2/ambience.ogg" id="8_amb"]
+[ext_resource type="Texture2D" path="res://Assets/Level2/ready.png" id="9_ready"]
+
+[node name="CockpitLevel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 834.0
+offset_bottom = 672.0
+color = Color(0, 0, 0, 1)
+
+[node name="Cockpit" type="TextureRect" parent="."]
+layout_mode = 0
+offset_top = 108.0
+offset_right = 810.0
+offset_bottom = 648.0
+texture = ExtResource("2_cockpit")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NavigationButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 423.0
+offset_right = 208.0
+offset_bottom = 607.0
+texture_normal = ExtResource("3_nav")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="EngineButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 214.0
+offset_top = 423.0
+offset_right = 400.0
+offset_bottom = 607.0
+texture_normal = ExtResource("4_engine")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="FuelButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 407.0
+offset_top = 423.0
+offset_right = 592.0
+offset_bottom = 607.0
+texture_normal = ExtResource("5_fuel")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="OxygenButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 598.0
+offset_top = 423.0
+offset_right = 779.0
+offset_bottom = 607.0
+texture_normal = ExtResource("6_oxygen")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="ReadyLight" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_left = 359.0
+offset_top = 382.0
+offset_right = 449.0
+offset_bottom = 405.0
+mouse_filter = 2
+texture = ExtResource("9_ready")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LivesDisplay" type="Control" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -126.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = 46.0
+grow_horizontal = 0
+mouse_filter = 2
+
+[node name="Life1" type="ColorRect" parent="LivesDisplay"]
+layout_mode = 0
+offset_right = 26.0
+offset_bottom = 26.0
+color = Color(1, 0.36, 0.24, 1)
+
+[node name="Life2" type="ColorRect" parent="LivesDisplay"]
+layout_mode = 0
+offset_left = 38.0
+offset_right = 64.0
+offset_bottom = 26.0
+color = Color(1, 0.36, 0.24, 1)
+
+[node name="Life3" type="ColorRect" parent="LivesDisplay"]
+layout_mode = 0
+offset_left = 76.0
+offset_right = 102.0
+offset_bottom = 26.0
+color = Color(1, 0.36, 0.24, 1)
+
+[node name="BackButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 72.0
+offset_bottom = 66.0
+texture_normal = ExtResource("7_back")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="RedFlash" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 834.0
+offset_bottom = 672.0
+mouse_filter = 2
+color = Color(1, 0.1, 0.1, 0)
+
+[node name="FadeOut" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 834.0
+offset_bottom = 672.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="NarrationOverlay" type="Control" parent="."]
+layout_mode = 0
+offset_right = 810.0
+offset_bottom = 648.0
+mouse_filter = 0
+
+[node name="Dim" type="ColorRect" parent="NarrationOverlay"]
+layout_mode = 0
+offset_right = 810.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 0.62)
+
+[node name="Panel" type="ColorRect" parent="NarrationOverlay"]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 210.0
+offset_right = 735.0
+offset_bottom = 400.0
+color = Color(0.04, 0.07, 0.12, 0.92)
+
+[node name="Text" type="Label" parent="NarrationOverlay"]
+layout_mode = 0
+offset_left = 105.0
+offset_top = 225.0
+offset_right = 705.0
+offset_bottom = 385.0
+theme_override_colors/font_color = Color(0.86, 0.93, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_amb")
+
+[node name="NavAudio" type="AudioStreamPlayer" parent="."]
+
+[node name="EngineAudio" type="AudioStreamPlayer" parent="."]
+
+[node name="FuelAudio" type="AudioStreamPlayer" parent="."]
+
+[node name="OxygenAudio" type="AudioStreamPlayer" parent="."]
+
+[connection signal="button_down" from="NavigationButton" to="." method="_on_navigation_button_down"]
+[connection signal="button_down" from="EngineButton" to="." method="_on_engine_button_down"]
+[connection signal="button_down" from="FuelButton" to="." method="_on_fuel_button_down"]
+[connection signal="button_down" from="OxygenButton" to="." method="_on_oxygen_button_down"]
+[connection signal="button_down" from="BackButton" to="." method="_on_back_button_down"]
