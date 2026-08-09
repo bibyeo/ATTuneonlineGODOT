@@ -4,9 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://c3fkri40v0box" path="res://Assets/Screen 2/levels.png" id="2_n0emx"]
 [ext_resource type="Texture2D" uid="uid://db82js7th3tmy" path="res://Assets/Screen 2/lv1.png" id="3_lj281"]
 [ext_resource type="Script" uid="uid://c3e0f8k3m5vx0" path="res://Scenes/garrage_button.gd" id="4_n0emx"]
-[ext_resource type="Script" path="res://Scenes/level1_button.gd" id="5_lvl1"]
-[ext_resource type="Texture2D" path="res://Assets/Screen 2/lv2.png" id="7_lv2tex"]
-[ext_resource type="Script" path="res://Scenes/level2_button.gd" id="8_lvl2"]
+[ext_resource type="Script" uid="uid://b4t1j8ydida3k" path="res://Scenes/level1_button.gd" id="5_lvl1"]
+[ext_resource type="Texture2D" uid="uid://bco3eshwdeidx" path="res://Assets/Screen 2/lv2.png" id="7_lv2tex"]
+[ext_resource type="Script" uid="uid://dha0twj0wx53g" path="res://Scenes/level2_button.gd" id="8_lvl2"]
+[ext_resource type="Texture2D" uid="uid://d0bt2rmy3i1w1" path="res://Assets/Screen 5/back.png" id="8_twenu"]
+[ext_resource type="Script" uid="uid://dqi3vctasloqf" path="res://Scenes/SpaceLevelSelectExit.gd" id="9_0ywan"]
 
 [node name="SpaceLevelSelect" type="Control" unique_id=62907779]
 layout_mode = 3
@@ -43,7 +45,7 @@ texture_normal = ExtResource("3_lj281")
 stretch_mode = 4
 script = ExtResource("5_lvl1")
 
-[node name="Level2Button" type="TextureButton" parent="."]
+[node name="Level2Button" type="TextureButton" parent="." unique_id=1462259638]
 layout_mode = 0
 offset_left = 315.0
 offset_top = 69.0
@@ -63,6 +65,16 @@ offset_bottom = 430.0
 flat = true
 script = ExtResource("4_n0emx")
 
-[connection signal="button_down" from="Level2Button" to="Level2Button" method="_on_button_down"]
+[node name="ExitButton" type="TextureButton" parent="." unique_id=1102424931]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 91.0
+offset_bottom = 82.0
+texture_normal = ExtResource("8_twenu")
+script = ExtResource("9_0ywan")
+
 [connection signal="button_down" from="Level1Button" to="Level1Button" method="_on_button_down"]
+[connection signal="button_down" from="Level2Button" to="Level2Button" method="_on_button_down"]
 [connection signal="button_down" from="GarageButton" to="GarageButton" method="_on_button_down"]
+[connection signal="button_down" from="ExitButton" to="ExitButton" method="_on_button_down"]

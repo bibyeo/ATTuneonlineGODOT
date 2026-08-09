@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dhs62a6iwbs5l" path="res://Scenes/garrage.gd" id="1_ubrd6"]
 [ext_resource type="Texture2D" uid="uid://dx28q8i02vu3i" path="res://Assets/Garage/background.png" id="2_48f2c"]
-[ext_resource type="Texture2D" uid="uid://cqhfudiryx0rn" path="res://Assets/Screen 3/back.png" id="3_48f2c"]
-[ext_resource type="Script" uid="uid://b4j8gsjluaakq" path="res://Scenes/exit_button.gd" id="2_7h71p"]
+[ext_resource type="Texture2D" uid="uid://cc7tvdasd5chr" path="res://Assets/Garage/left.png" id="3_vjm3f"]
+[ext_resource type="Texture2D" uid="uid://dhg0d3hgompe1" path="res://Assets/Garage/right.png" id="4_84vo7"]
+[ext_resource type="Texture2D" uid="uid://d0bt2rmy3i1w1" path="res://Assets/Screen 5/back.png" id="5_gxpy2"]
+[ext_resource type="Script" uid="uid://bln1pi1r2mbi0" path="res://Scenes/GarageExit.gd" id="6_8ijlh"]
 
 [node name="Garrage" type="Control" unique_id=1851975263]
 layout_mode = 3
@@ -28,7 +30,7 @@ offset_left = 100.0
 offset_top = 280.0
 offset_right = 180.0
 offset_bottom = 356.0
-texture_normal = ExtResource("3_48f2c")
+texture_normal = ExtResource("3_vjm3f")
 
 [node name="RightButton" type="TextureButton" parent="." unique_id=855525114]
 layout_mode = 0
@@ -36,17 +38,17 @@ offset_left = 650.0
 offset_top = 280.0
 offset_right = 730.0
 offset_bottom = 356.0
-texture_normal = ExtResource("3_48f2c")
-flip_h = true
+texture_normal = ExtResource("4_84vo7")
 
-[node name="ExitButton" type="Button" parent="." unique_id=1832924289]
+[node name="ExitButton" type="TextureButton" parent="." unique_id=1829056537]
 layout_mode = 0
-offset_left = 785.0
-offset_top = 5.0
-offset_right = 803.0
-offset_bottom = 36.0
-text = "X"
-script = ExtResource("2_7h71p")
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 91.0
+offset_bottom = 82.0
+texture_normal = ExtResource("5_gxpy2")
+script = ExtResource("6_8ijlh")
 
 [connection signal="button_down" from="LeftButton" to="." method="_on_left_button_button_down"]
 [connection signal="button_down" from="RightButton" to="." method="_on_right_button_button_down"]
+[connection signal="button_down" from="ExitButton" to="ExitButton" method="_on_button_down"]
