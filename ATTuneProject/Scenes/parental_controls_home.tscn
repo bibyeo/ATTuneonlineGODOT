@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://c8qqrkikyv13q"]
+
+[ext_resource type="Texture2D" uid="uid://ow4co8nbugwq" path="res://Assets/ParentalControlsScreens/Attune - ADHD ABC Tracker (1).png" id="1_tmg6t"]
+[ext_resource type="Script" uid="uid://iw018ft8p160" path="res://Scenes/parental_log_open.gd" id="2_di242"]
+[ext_resource type="Script" uid="uid://3op84blcux13" path="res://Scenes/parental_insights_open.gd" id="3_xsl3r"]
+[ext_resource type="Script" uid="uid://bvg84r7t0ihh4" path="res://Scenes/parental_exit_button.gd" id="4_ncsj0"]
+
+[node name="ParentalControlsHome" type="Control" unique_id=1455182665]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=347916729]
+layout_mode = 0
+offset_right = 810.0
+offset_bottom = 648.0
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=918484320]
+layout_mode = 0
+offset_left = 178.0
+offset_right = 632.56714
+offset_bottom = 648.0
+texture = ExtResource("1_tmg6t")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="ParentalLogOpen" type="Button" parent="." unique_id=243899359]
+layout_mode = 0
+offset_left = 263.0
+offset_top = 583.0
+offset_right = 308.0
+offset_bottom = 615.0
+flat = true
+script = ExtResource("2_di242")
+
+[node name="ParentalInsightsOpen" type="Button" parent="." unique_id=1157252814]
+layout_mode = 0
+offset_left = 399.0
+offset_top = 585.0
+offset_right = 463.0
+offset_bottom = 612.0
+flat = true
+script = ExtResource("3_xsl3r")
+
+[node name="ParentalExitButton" type="Button" parent="." unique_id=829823338]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 2.953
+offset_left = 554.0
+offset_top = 13.0
+offset_right = -1770.9302
+offset_bottom = 44.0
+text = "Exit"
+script = ExtResource("4_ncsj0")
+
+[connection signal="button_down" from="ParentalLogOpen" to="ParentalLogOpen" method="_on_button_down"]
+[connection signal="button_down" from="ParentalInsightsOpen" to="ParentalInsightsOpen" method="_on_button_down"]
+[connection signal="button_down" from="ParentalExitButton" to="ParentalExitButton" method="_on_button_down"]

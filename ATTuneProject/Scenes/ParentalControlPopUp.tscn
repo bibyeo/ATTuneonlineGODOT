@@ -59,6 +59,11 @@ offset_bottom = 393.0
 text = "Confirm
 "
 
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=1948941913]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="text_changed" from="TextureRect/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="button_down" from="Exit" to="." method="_on_exit_button_down"]
 [connection signal="button_down" from="EnterParentMode" to="." method="_on_enter_parent_mode_button_down"]

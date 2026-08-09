@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://c4dghwl4ka03x"]
+
+[ext_resource type="Texture2D" uid="uid://cldx4ppa81bb2" path="res://Assets/ParentalControlsScreens/Attune - ADHD ABC Tracker (3).png" id="1_17d6s"]
+[ext_resource type="Script" uid="uid://dd84h7ncde2ej" path="res://Scenes/parental_home_button.gd" id="2_cqmnv"]
+
+[node name="ParentalLog" type="Control" unique_id=1063611431]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=809015623]
+layout_mode = 0
+offset_right = 810.0
+offset_bottom = 648.0
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=883424614]
+layout_mode = 0
+offset_left = 260.0
+offset_right = 550.8286
+offset_bottom = 648.0
+texture = ExtResource("1_17d6s")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="ParentalHomeButton" type="Button" parent="." unique_id=700321650]
+layout_mode = 0
+offset_left = 558.0
+offset_top = 10.0
+offset_right = 613.0
+offset_bottom = 41.0
+text = "Home"
+script = ExtResource("2_cqmnv")
+
+[connection signal="button_down" from="ParentalHomeButton" to="ParentalHomeButton" method="_on_button_down"]
