@@ -1,6 +1,6 @@
 extends Control
 
-# Parent mode. One scene, five views (Home / ABC / Log / History / Insights)
+# Parent mode. One scene, five views (Home / ABC / Log / Grades / Insights)
 # plus an entry detail view, all built in code and swapped by _show().
 
 # --- palette --------------------------------------------------------------
@@ -67,6 +67,13 @@ var log_severity := 3
 var log_note := ""
 var log_prefilled := false
 
+# working selections for Grades
+var student_grades := {
+	"Maths": 3,
+	"Reading": 3,
+	"Writing": 3
+}
+
 var content: VBoxContainer
 var scroll: ScrollContainer
 var nav_row: HBoxContainer
@@ -125,7 +132,7 @@ func _build_nav() -> void:
 	add_child(nav_row)
 
 	for item in [["Home", "home"], ["ABC", "abc"], ["Log", "log"],
-			["History", "history"], ["Insights", "insights"]]:
+			["Grades", "grades"], ["Insights", "insights"]]:
 		var b := Button.new()
 		b.text = item[0]
 		b.flat = true
@@ -135,7 +142,7 @@ func _build_nav() -> void:
 		nav_row.add_child(b)
 
 func _refresh_nav() -> void:
-	var keys := ["home", "abc", "log", "history", "insights"]
+	var keys := ["home", "abc", "log", "grades", "insights"]
 	for i in nav_row.get_child_count():
 		var b := nav_row.get_child(i) as Button
 		var active: bool = keys[i] == current_view
@@ -154,7 +161,7 @@ func _show(view: String, keep_scroll := false) -> void:
 		"home": _build_home()
 		"abc": _build_abc()
 		"log": _build_log()
-		"history": _build_history()
+		"grades": _build_grades()
 		"insights": _build_insights()
 		"detail": _build_detail()
 
@@ -669,12 +676,85 @@ func _build_detail() -> void:
 	_add(del)
 	content.add_child(_spacer(30))
 
-# --- History --------------------------------------------------------------
+# --- Grades ---------------------------------------------------------------
 
-func _build_history() -> void:
+func _build_grades() -> void:
 	content.add_child(_spacer(30))
 	var head := HBoxContainer.new()
-	var title := _label("History", 24, INK)
+	var title := _label("Grades", 24, INK)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(title)
+	_add(head)
+	_add(_label("Update your child's current academic performance", 13, MUTED))
+
+	for subject in ["Maths", "Reading", "Writing"]:
+		var color := BLUE if subject == "Maths" else (ORANGE if subject == "Reading" else GREEN)
+		_section(subject, "Scale from 1 (Struggling) to 5 (Excellent)", color)
+		_add(_grade_slider(subject))
+
+	content.add_child(_spacer(20))
+	var save_btn := _dark_button("✓  Save Grades")
+	save_btn.pressed.connect(func() -> void:
+		# e.g., ParentData.save_grades(student_grades)
+		_show("home")
+	)
+	_add(save_btn)
+	content.add_child(_spacer(30))
+
+func _grade_slider(subject: String) -> Control:
+	var box := VBoxContainer.new()
+	
+	var slider := HSlider.new()
+	slider.min_value = 1
+	slider.max_value = 5
+	slider.step = 1
+	slider.value = student_grades[subject]
+	slider.custom_minimum_size.y = 24
+	
+	var val_label := _label(_get_grade_text(student_grades[subject]), 14, INK)
+	
+	slider.value_changed.connect(func(v: float) -> void:
+		student_grades[subject] = int(v)
+		val_label.text = _get_grade_text(int(v))
+	)
+	
+	box.add_child(val_label)
+	box.add_child(slider)
+	return box
+
+func _get_grade_text(val: int) -> String:
+	match val:
+		1: return "1 - Struggling / Needs Support"
+		2: return "2 - Below Average"
+		3: return "3 - Average / On Track"
+		4: return "4 - Good"
+		5: return "5 - Excellent"
+	return str(val)
+
+# --- Insights & History ---------------------------------------------------
+
+func _build_insights() -> void:
+	content.add_child(_spacer(30))
+	_add(_label("Insights & History", 24, INK))
+
+	content.add_child(_spacer(10))
+	_add(_bar_card("Weekly incidents - last 6 weeks",
+		ParentData.weekly_counts(6), ["W1", "W2", "W3", "W4", "W5", "W6"]))
+
+	content.add_child(_spacer(10))
+	_add(_bar_card("Time-of-day pattern - this week",
+		ParentData.time_of_day_counts(), ["7-9am", "9-12", "12-3", "3-6pm", "6-9pm"]))
+
+	content.add_child(_spacer(10))
+	_add(_triggers_card())
+	
+	# Integrate History Section here
+	content.add_child(_spacer(30))
+	_add(_divider())
+	content.add_child(_spacer(20))
+	
+	var head := HBoxContainer.new()
+	var title := _label("Behaviour History", 20, INK)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title)
 	head.add_child(_label("%d entries" % ParentData.entries.size(), 12, MUTED))
@@ -697,7 +777,67 @@ func _build_history() -> void:
 		for e in ParentData.entries:
 			_add(_entry_row(e))
 			_add(_divider())
+	
 	content.add_child(_spacer(30))
+
+func _bar_card(title: String, values: Array, labels: Array) -> Control:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _rounded(CARD, 12))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	box.add_child(_label(title, 14, INK))
+
+	var peak := 1
+	for v in values:
+		peak = maxi(peak, int(v))
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.custom_minimum_size.y = 120
+	for i in values.size():
+		var col := VBoxContainer.new()
+		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		col.alignment = BoxContainer.ALIGNMENT_END
+		var bar := ColorRect.new()
+		bar.color = Color("c5d8ea")
+		bar.custom_minimum_size.y = maxf(8.0, 95.0 * float(values[i]) / float(peak))
+		col.add_child(bar)
+		var l := _label(str(labels[i]), 9, MUTED)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		col.add_child(l)
+		row.add_child(col)
+	box.add_child(row)
+	panel.add_child(box)
+	return panel
+
+func _triggers_card() -> Control:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _rounded(CARD, 12))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 6)
+	box.add_child(_label("Top triggers", 14, INK))
+
+	var rows := ParentData.top_triggers(5)
+	if rows.is_empty():
+		box.add_child(_label("Log a few moments to see which triggers come up most.", 11, MUTED))
+	else:
+		var peak := 1
+		for r in rows:
+			peak = maxi(peak, int(r[1]))
+		for r in rows:
+			box.add_child(_label(str(r[0]), 11, MUTED))
+			var track := PanelContainer.new()
+			track.add_theme_stylebox_override("panel", _rounded(Color("eeeeea"), 4))
+			track.custom_minimum_size.y = 10
+			var fill := ColorRect.new()
+			fill.color = Color("c5d8ea")
+			fill.custom_minimum_size.y = 10
+			fill.size_flags_horizontal = Control.SIZE_FILL
+			fill.custom_minimum_size.x = (CARD_W - PAD * 2 - 40) * float(r[1]) / float(peak)
+			track.add_child(fill)
+			box.add_child(track)
+	panel.add_child(box)
+	return panel
 
 func _calendar() -> Control:
 	var now := Time.get_datetime_dict_from_system()
@@ -758,83 +898,6 @@ func _calendar() -> Control:
 
 	var legend := _label("Tap a day to see that day's behavior detail", 10, MUTED)
 	box.add_child(legend)
-	panel.add_child(box)
-	return panel
-
-# --- Insights -------------------------------------------------------------
-
-func _build_insights() -> void:
-	content.add_child(_spacer(30))
-	_add(_label("Insights", 24, INK))
-
-	content.add_child(_spacer(10))
-	_add(_bar_card("Weekly incidents - last 6 weeks",
-		ParentData.weekly_counts(6), ["W1", "W2", "W3", "W4", "W5", "W6"]))
-
-	content.add_child(_spacer(10))
-	_add(_bar_card("Time-of-day pattern - this week",
-		ParentData.time_of_day_counts(), ["7-9am", "9-12", "12-3", "3-6pm", "6-9pm"]))
-
-	content.add_child(_spacer(10))
-	_add(_triggers_card())
-	content.add_child(_spacer(30))
-
-func _bar_card(title: String, values: Array, labels: Array) -> Control:
-	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _rounded(CARD, 12))
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 8)
-	box.add_child(_label(title, 14, INK))
-
-	var peak := 1
-	for v in values:
-		peak = maxi(peak, int(v))
-
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	row.custom_minimum_size.y = 120
-	for i in values.size():
-		var col := VBoxContainer.new()
-		col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		col.alignment = BoxContainer.ALIGNMENT_END
-		var bar := ColorRect.new()
-		bar.color = Color("c5d8ea")
-		bar.custom_minimum_size.y = maxf(8.0, 95.0 * float(values[i]) / float(peak))
-		col.add_child(bar)
-		var l := _label(str(labels[i]), 9, MUTED)
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		col.add_child(l)
-		row.add_child(col)
-	box.add_child(row)
-	panel.add_child(box)
-	return panel
-
-func _triggers_card() -> Control:
-	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _rounded(CARD, 12))
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 6)
-	box.add_child(_label("Top triggers", 14, INK))
-
-	var rows := ParentData.top_triggers(5)
-	if rows.is_empty():
-		box.add_child(_label("Log a few moments to see which triggers come up most.", 11, MUTED))
-	else:
-		var peak := 1
-		for r in rows:
-			peak = maxi(peak, int(r[1]))
-		for r in rows:
-			box.add_child(_label(str(r[0]), 11, MUTED))
-			var track := PanelContainer.new()
-			track.add_theme_stylebox_override("panel", _rounded(Color("eeeeea"), 4))
-			track.custom_minimum_size.y = 10
-			var fill := ColorRect.new()
-			fill.color = Color("c5d8ea")
-			fill.custom_minimum_size.y = 10
-			fill.size_flags_horizontal = Control.SIZE_FILL
-			fill.custom_minimum_size.x = (CARD_W - PAD * 2 - 40) * float(r[1]) / float(peak)
-			track.add_child(fill)
-			box.add_child(track)
 	panel.add_child(box)
 	return panel
 

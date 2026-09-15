@@ -108,9 +108,9 @@ offset_left = 12.0
 offset_top = 8.0
 offset_right = 72.0
 offset_bottom = 65.0
+texture_normal = ExtResource("9_d1pnq")
 ignore_texture_size = true
 stretch_mode = 5
-texture_normal = ExtResource("9_d1pnq")
 script = ExtResource("10_d1pnq")
 
 [connection signal="button_down" from="SpaceModeButton" to="SpaceModeButton" method="_on_button_down"]
