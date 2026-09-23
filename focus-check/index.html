@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATTune Focus Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div id="stage" aria-hidden="true"></div>
+<div class="vignette"></div>
+<div class="labels" id="labels" aria-hidden="true"></div>
+
+<header class="hud" id="hud" hidden>
+  <div class="brand">ATTune <span>Focus Check</span></div>
+  <div class="stage-name" id="stageName"></div>
+  <div class="hud-actions">
+    <button class="chip" id="fsBtn" type="button">Full screen</button>
+    <button class="chip" id="pauseBtn" type="button" hidden>Pause</button>
+  </div>
+</header>
+
+<div class="listen" id="listen" role="status" hidden><div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span id="listenText"></span></div>
+<section class="box" id="box" hidden aria-live="polite"></section>
+<section class="notes" id="notes" hidden></section>
+<section class="title" id="title" hidden></section>
+
+<section class="loader" id="loader">
+  <h1>Are you actually listening?</h1>
+  <p>Three rooms, about five minutes. Everything red wants your attention. Your job is to listen anyway.</p>
+  <div class="bar"><span id="loadBar"></span></div>
+  <div class="fields">
+    <label for="playerName">First name<input id="playerName" type="text" maxlength="24" autocomplete="given-name" placeholder="Sam"></label>
+    <label for="playerAge">Age<input id="playerAge" type="number" min="5" max="99" inputmode="numeric" placeholder="14"></label>
+  </div>
+  <p class="band-note" id="bandNote">Type an age and the game sets itself for that age group.</p>
+  <div id="enterWrap"></div>
+  <p class="fine">Headphones on. Some sounds come from your left or right. At the end, AI marks your lecture notes and you'll be asked to allow it. This is a game, not a diagnosis.</p>
+</section>
+
+<section class="results" id="results" hidden></section>
+<div class="veil" id="veil" hidden><h2>Paused</h2><button class="btn" id="resumeBtn" type="button">Resume</button></div>
+<div class="rotate" id="rotate" hidden>
+  <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="16" y="4" width="16" height="40" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="24" cy="38" r="1.8" fill="currentColor"/></svg>
+  <h2>Turn your phone sideways</h2>
+  <p>The rooms are made for a wide screen. Rotate and the game carries on.</p>
+  <button class="btn ghost" id="stayPortrait" type="button">Stay like this</button>
+</div>
+<div class="flash" id="flash"></div>
+<script src="js/meta.js"></script>
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/flow.js"></script>
+</body>
+</html>
