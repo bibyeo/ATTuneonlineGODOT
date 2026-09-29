@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Attune is a game where children practise listening, holding on to instructions, and responding to what matters while distractions compete for their attention.">
+<link rel="icon" href="assets/logo_symbol.png">
+<title>Attune</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@600;700&family=Inter:wght@400;500&family=Silkscreen&display=swap">
+<link rel="stylesheet" href="site.css">
+<style>
+  :root{
+    --ink:#2F2A36;
+    --ink-soft:#4B4452;
+    --lilac:#C3B4FB;
+    --lilac-hi:#D6CBFF;
+    --ground:#E9DCCB;
+    color-scheme: light;
+  }
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--ground);color:var(--ink);overflow-x:hidden;
+       font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;}
+  #ext{position:absolute;inset:-40px;background:url(assets/final_small.jpg) center/cover no-repeat;filter:blur(28px) saturate(1.05);}
+
+  /* the desk lives in the render's own 1536 x 1024 space */
+  #stage{position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
+  #plate,#intro{position:absolute;inset:0;width:1536px;height:1024px;display:block;}
+  #intro{z-index:3;transition:opacity .6s ease;pointer-events:none;}
+  #intro.done{opacity:0;}
+  /* live 3D toys sit on top of the rendered desk */
+  #toys{position:absolute;inset:0;width:1536px;height:1024px;display:block;z-index:1;touch-action:pan-y;}
+  #root{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;}
+  #toys{opacity:0;transition:opacity .5s ease;transform-origin:36% 50%;}
+  .ready #toys{opacity:1;}
+  #loadnote{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:7;font-size:13px;color:var(--ink-soft);background:rgba(255,255,255,.7);
+            padding:8px 12px;border-radius:999px;opacity:0;transition:opacity .4s;pointer-events:none;}
+  .waiting #loadnote{opacity:1;}
+  #dust{position:absolute;inset:0;width:1536px;height:1024px;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity 1.2s ease;z-index:4;}
+  .live #dust{opacity:1;}
+  #logo{position:absolute;left:732px;top:420px;width:160px;pointer-events:none;opacity:0;z-index:4;will-change:opacity,transform;
+        filter:drop-shadow(0 8px 16px rgba(110,70,140,.16));}
+  #logo.shown{opacity:1;transition:opacity 1.6s ease;}
+  .busy #logo.shown{opacity:0;transition:opacity 1.1s ease;}
+  #logo.in{animation:logoIn 1.1s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes logoIn{from{opacity:0;transform:translateY(10px) scale(.96);}to{opacity:1;transform:none;}}
+  #tagline{position:absolute;left:662px;top:548px;width:300px;text-align:center;pointer-events:none;opacity:0;transform:translateY(8px);z-index:4;
+           transition:opacity .9s cubic-bezier(.22,1,.36,1) .25s, transform .9s cubic-bezier(.22,1,.36,1) .25s;
+           text-shadow:0 0 3px rgba(246,240,231,.95),0 0 10px rgba(246,240,231,.9),0 0 22px rgba(246,240,231,.8);}
+  .live #tagline{opacity:1;transform:none;}
+  #taglineM{display:none;position:fixed;left:16px;right:16px;top:calc(118px + env(safe-area-inset-top,0px));text-align:center;z-index:6;pointer-events:none;
+             opacity:0;transform:translateY(8px);transition:opacity .9s cubic-bezier(.22,1,.36,1) .25s, transform .9s cubic-bezier(.22,1,.36,1) .25s;}
+  #taglineM b{display:block;font-weight:500;font-size:20px;line-height:25px;color:#241F2B;text-wrap:balance;}
+  #taglineM span{display:block;margin-top:4px;font-size:14px;color:#3E3748;font-weight:500;}
+  .tall #tagline{display:none;}
+  .tall #taglineM{display:block;}
+  .tall.live-body #taglineM{opacity:1;transform:none;}
+  #tagline h1{margin:0;font-weight:500;font-size:20px;line-height:24px;color:#241F2B;letter-spacing:-.01em;}
+  #tagline p{margin:5px 0 0;font-size:12.5px;line-height:16px;font-weight:500;color:#3E3748;white-space:nowrap;}
+  .kbd-link{position:absolute;display:block;border-radius:14px;pointer-events:none;outline:none;z-index:5;color:transparent;font-size:0;overflow:hidden;}
+  .kbd-link:focus-visible{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--lilac);}
+
+  header{position:fixed;left:0;right:0;top:0;height:100px;transition:opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1), background .3s, height .3s;padding-top:env(safe-area-inset-top,0px);display:flex;align-items:center;
+         padding-inline:max(16px,4.4vw);box-sizing:border-box;z-index:5;opacity:0;transform:translateY(-14px);
+         background:linear-gradient(rgba(60,42,30,.28),rgba(60,42,30,0));
+         transition:opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1);}
+  .header-in header{opacity:1;transform:none;}
+  header.solid{background:rgba(247,241,232,.94);backdrop-filter:blur(10px);box-shadow:0 1px 0 #E2D6C6;height:72px;opacity:1;transform:none;}
+  header.solid .wordmark, header.solid nav a{color:var(--ink);text-shadow:none;}
+  header.solid nav a[aria-current]{color:#7B5BE0;} header.solid nav a[aria-current]::after{background:#7B5BE0;}
+  .wordmark{font-size:15px;letter-spacing:.62em;color:#fff;text-decoration:none;white-space:nowrap;}
+  nav{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:42px;}
+  nav a{color:#fff;text-decoration:none;font-size:15px;position:relative;padding:6px 0;white-space:nowrap;text-shadow:0 1px 8px rgba(40,25,15,.3);}
+  nav a[aria-current]{color:var(--lilac-hi);}
+  nav a[aria-current]::after{content:"";position:absolute;left:50%;bottom:-6px;width:20px;height:2px;margin-left:-10px;background:var(--lilac-hi);border-radius:2px;}
+  nav a:hover{color:var(--lilac-hi);}
+  .cta{margin-left:auto;background:var(--lilac);color:var(--ink);text-decoration:none;font-size:15px;font-weight:500;
+       padding:12px 26px;border-radius:999px;box-shadow:0 6px 18px rgba(120,90,200,.25);transition:background .2s, transform .2s;white-space:nowrap;}
+  .cta:hover{background:var(--lilac-hi);transform:translateY(-1px);}
+  a:focus-visible,button:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:6px;}
+
+  #replay{position:absolute;right:max(16px,2vw);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:6;
+          font:500 13px/1 Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:rgba(255,255,255,.72);
+          border:0;border-radius:999px;padding:10px 14px;cursor:pointer;backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .6s;}
+  .live #replay{opacity:1;pointer-events:auto;}
+  /* hand-lettered prompt pointing at the flower charm */
+  #pickup{position:absolute;left:0;top:0;width:1536px;height:1024px;pointer-events:none;z-index:2;overflow:visible;opacity:0;}
+  #pickup .ink{fill:none;stroke:#3A3150;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;}
+  #pickup text{font-family:Caveat,"Segoe Print","Bradley Hand",cursive;fill:#3A3150;}
+  #pickup .t1{font-size:38px;font-weight:700;}
+  #pickup .t2{font-size:23px;font-weight:600;fill:#5B5270;}
+  #pickup .words{clip-path:inset(0 100% 0 0);}
+  .live #pickup{opacity:1;}
+  .live #pickup .words{animation:write .5s steps(18,end) .2s forwards;}
+  .live #pickup .ink{animation:draw .45s cubic-bezier(.5,0,.3,1) .6s forwards;}
+  .live #pickup .head{animation:draw .15s ease-out 1s forwards;}
+  .live #pickup .note{animation:nudge 2.8s ease-in-out 1.8s infinite;transform-box:fill-box;transform-origin:center;}
+  @keyframes write{to{clip-path:inset(0 0 0 0)}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes nudge{0%,100%{transform:none}50%{transform:translate(-4px,2px)}}
+  .touched #pickup{opacity:0;transition:opacity .5s ease;}
+  @media (prefers-reduced-motion: reduce){ #pickup .words{clip-path:none;} #pickup .ink{stroke-dashoffset:0!important;} }
+  /* on tall screens the prompt sits in the open space under the desk */
+  #pickupM{display:none;position:absolute;left:0;right:0;bottom:calc(13vh + env(safe-area-inset-bottom,0px));text-align:center;z-index:6;pointer-events:none;
+           font-family:Caveat,"Segoe Print","Bradley Hand",cursive;color:#3A3150;opacity:0;transition:opacity .6s ease;}
+  #pickupM b{display:block;font-size:34px;font-weight:700;line-height:1;transform:rotate(-3deg);}
+  #pickupM span{display:block;font-size:21px;font-weight:600;color:#5B5270;margin-top:6px;}
+  #pickupM svg{display:block;margin:0 auto 4px;width:90px;height:52px;overflow:visible;}
+  #pickupM path{fill:none;stroke:#3A3150;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;}
+  .tall #pickup{display:none;}
+  .tall #pickupM{display:block;}
+  .tall.live-body #pickupM{opacity:1;transition-delay:.2s;}
+  .touched-body #pickupM{opacity:0!important;transition-delay:0s!important;}
+  /* tagline sits centred just under the menu */
+  #topline{position:absolute;left:16px;right:16px;top:calc(88px + env(safe-area-inset-top,0px));z-index:5;text-align:center;pointer-events:none;
+           opacity:0;transform:translateY(-6px);transition:opacity .9s cubic-bezier(.22,1,.36,1) .3s, transform .9s cubic-bezier(.22,1,.36,1) .3s;
+           text-shadow:0 0 3px rgba(246,240,231,.95),0 0 12px rgba(246,240,231,.9),0 0 26px rgba(246,240,231,.8);}
+  #topline b{display:block;font-weight:500;font-size:clamp(18px,2vw,26px);line-height:1.25;color:#241F2B;letter-spacing:-.01em;text-wrap:balance;}
+  #topline span{display:block;margin-top:4px;font-size:clamp(12.5px,1.05vw,15px);font-weight:500;color:#3E3748;}
+  .header-in #topline{opacity:1;transform:none;}
+  @media (max-width: 760px){ #topline{top:calc(96px + env(safe-area-inset-top,0px));} }
+  #toast{position:fixed;left:50%;bottom:calc(64px + env(safe-area-inset-bottom,0px));translate:-50% 10px;max-width:calc(100% - 32px);box-sizing:border-box;
+         background:rgba(47,42,54,.92);color:#fff;font-size:14px;line-height:1.4;padding:11px 16px;border-radius:12px;
+         opacity:0;pointer-events:none;transition:opacity .25s, translate .25s;z-index:9;text-align:center;}
+  #toast.show{opacity:1;translate:-50% 0;}
+
+  .tall #stage{-webkit-mask-image:linear-gradient(transparent 0,#000 8%,#000 92%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 8%,#000 92%,transparent 100%);}
+  @media (max-width: 1180px){ nav{gap:26px;} nav a{font-size:14px;} }
+  @media (max-width: 960px){
+    header{height:84px;}
+    .wordmark{letter-spacing:.45em;font-size:13px;}
+    nav{gap:18px;} nav a{font-size:13px;}
+    .cta{padding:10px 16px;font-size:13px;}
+  }
+  /* small screens: the links move to a second row, still across the top */
+  @media (max-width: 760px){
+    header{height:auto;flex-wrap:wrap;row-gap:6px;padding-block:14px 8px;}
+    nav{position:static;transform:none;order:3;flex:1 0 100%;justify-content:center;gap:22px;
+        overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+    nav::-webkit-scrollbar{display:none;}
+    nav a{font-size:13px;flex:0 0 auto;}
+  }
+  @media (max-width: 480px){ nav{justify-content:safe center;gap:14px;} nav a{font-size:12.5px;} }
+  @media (max-width: 420px){ .cta{padding:9px 14px;font-size:13px;} .wordmark{letter-spacing:.35em;} }
+  @media (prefers-reduced-motion: reduce){ #logo.in{animation:none;opacity:1;} }
+</style>
+
+</head>
+<body>
+<div id="root">
+  <div id="ext" aria-hidden="true"></div>
+  <div id="stage">
+    <img id="plate" src="assets/plate.jpg" alt="A sunny desk with books, a mug, a gift box, a pencil cup and a handheld console" draggable="false">
+    <canvas id="toys" aria-label="Toys you can pick up: voxel animals, stars, charms, the crocodile, the dog and two brooch buttons"></canvas>
+    <canvas id="dust" width="1536" height="1024" aria-hidden="true"></canvas>
+    <svg id="pickup" viewBox="0 0 1536 1024" aria-hidden="true">
+      <g class="note">
+        <g class="words" transform="rotate(-5 380 210)">
+          <text class="t1" x="310" y="190">Pick up</text>
+          <text class="t1" x="324" y="228">the toys!</text>
+          <text class="t2" x="306" y="258" id="pickupHow">drag them with your mouse</text>
+        </g>
+        <path class="ink" d="M 372 276 C 372 292, 366 304, 352 306 C 336 308, 334 290, 348 290 C 362 290, 360 314, 318 334"/>
+        <path class="ink head" d="M 322 318 L 314 336 L 333 339"/>
+      </g>
+    </svg>
+    <img id="logo" src="assets/logo_symbol.png" alt="Attune" draggable="false">
+    <a class="kbd-link" id="kA" href="#attention-test">Attention Test</a>
+    <a class="kbd-link" id="kB" href="#more-info">More Info</a>
+  </div>
+
+  <header>
+    <a class="wordmark" href="#root">ATTUNE</a>
+    <nav id="mainNav" aria-label="Main">
+      <a href="#mission">Mission</a>
+      <a href="#try">Try it</a>
+      <a href="#game">The game</a>
+      <a href="parents/">For parents</a>
+      <a href="research/">Research</a>
+    </nav>
+    <a class="cta" data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Take the focus check&nbsp;→</a>
+  </header>
+  <div id="topline"><b>Helping young minds stay in tune.</b><span>Play. Practice. Build focus for real life.</span></div>
+  <button id="replay" type="button">↻ Replay intro</button>
+  <div id="pickupM" aria-hidden="true">
+  <svg viewBox="0 0 90 52"><path d="M 60 50 C 58 36, 52 26, 40 24 C 28 22, 26 34, 36 34 C 46 34, 44 14, 30 4"/><path d="M 22 10 L 30 3 L 36 12"/></svg>
+  <b>Pick up the toys!</b><span>drag them around with your finger</span>
+</div>
+  <div id="loadnote">Unpacking the toys…</div>
+</div>
+<main class="page" id="content">
+  <div class="ticker" aria-label="About this build"><div class="track">
+    <span style="--c:var(--lilac)">In development</span><span style="--c:var(--orange)">Headphones recommended</span><span style="--c:var(--mint)">About five minutes</span><span style="--c:var(--yellow)">A game, not a diagnosis</span><span style="--c:var(--pink)">Made in Auckland</span>
+    <span style="--c:var(--lilac)" aria-hidden="true">In development</span><span style="--c:var(--orange)" aria-hidden="true">Headphones recommended</span><span style="--c:var(--mint)" aria-hidden="true">About five minutes</span><span style="--c:var(--yellow)" aria-hidden="true">A game, not a diagnosis</span><span style="--c:var(--pink)" aria-hidden="true">Made in Auckland</span>
+  </div></div>
+
+  <!-- MISSION -->
+  <section class="sec" id="mission" aria-labelledby="mission-h">
+    <div class="wrap split">
+      <div class="land">
+        <p class="eyebrow" style="--c:var(--blue)">Our mission</p>
+        <h2 class="h" id="mission-h">Attention practice kids <span class="pop" style="--c:var(--blue)">actually</span> want to open.</h2>
+        <p class="lede">Through play, Attune helps children practise staying focused, listening to instructions, and following them when the world gets noisy, whether or not they have an ADHD diagnosis.</p>
+        <div class="row" style="margin-top:28px">
+          <a class="btn" data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Take the focus check</a>
+          <a class="btn orange" data-site="/play/" href="https://attuneonline.com/play/">Play the levels</a>
+        </div>
+      </div>
+      <figure class="noisy land" aria-label="Animation: a child at a school desk keeps getting pulled away from the teacher’s instruction by a bird, a whisper, a buzzing phone, a fly and a ball outside">
+        <svg id="noisy" viewBox="0 0 160 140" aria-hidden="true"></svg>
+        <figcaption class="noisy-cap"><span class="hand">one instruction to follow…</span><span class="hand" style="color:var(--violet)">…and so much else going on</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- THE CHALLENGE -->
+  <section class="sec" id="challenge" aria-labelledby="challenge-h" style="padding-top:0">
+    <div class="wrap">
+      <div class="land">
+        <p class="eyebrow" style="--c:var(--orange)">The challenge</p>
+        <h2 class="h" id="challenge-h">Listening takes more than <span class="under" style="--c:var(--yellow)">hearing</span>.</h2>
+        <p class="lede">In classrooms, at home and on the playground, children have to pick out one voice, hold on to what it asked, and act on it while everything else competes. Attune turns that into four skills to practise.</p>
+      </div>
+      <ol class="skills">
+        <li class="skill land" style="--r:-2deg;--c:var(--sky)"><span class="num">01</span><span class="ico" data-icon="ear"></span><h3>Find the message</h3><p>Notice the voice or cue that matters among competing sounds.</p></li>
+        <li class="skill land" style="--r:1.5deg;--c:var(--mint)"><span class="num">02</span><span class="ico" data-icon="line"></span><h3>Stay with it</h3><p>Keep attention on instructions across a longer sequence.</p></li>
+        <li class="skill land" style="--r:-1deg;--c:var(--yellow)"><span class="num">03</span><span class="ico" data-icon="hold"></span><h3>Hold the instruction</h3><p>Remember what to do long enough to respond.</p></li>
+        <li class="skill land" style="--r:2deg;--c:var(--pink)"><span class="num">04</span><span class="ico" data-icon="pick"></span><h3>Choose a response</h3><p>Ignore a tempting decoy and act on the relevant instruction.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS: a tiny playable mission -->
+  <section class="sec" id="game" aria-labelledby="game-h" style="background:rgba(255,255,255,.28)">
+    <div class="wrap split">
+      <div class="land">
+        <p class="eyebrow" style="--c:var(--pink)">How it works</p>
+        <h2 class="h" id="game-h">Short missions. Feedback <span class="pop" style="--c:var(--violet)">straight away.</span></h2>
+        <p class="lede">Each mission gives one instruction, one clear action, and an instant answer. As children progress, they listen for longer, and more sounds compete for their attention.</p>
+        <p>Try a tiny one here. Read what Mr Croc asks, ignore the chatter, and tap the right star. It gets noisier each round.</p>
+      </div>
+      <div class="land">
+        <div class="console" id="mini" aria-label="A tiny example mission you can play">
+          <div class="screen">
+            <div class="hud"><span>Mission · Classroom</span><b id="miniScore">★ 0 / 5</b></div>
+            <div class="say" id="miniSay" aria-live="polite">Press start. Mr Croc is about to ask you something.</div>
+            <div class="field" id="miniField"></div>
+            <div class="fb" id="miniFb" aria-live="polite"></div>
+          </div>
+          <div class="pads"><span class="dpad" aria-hidden="true"></span><button class="start" id="miniStart" type="button">Start</button><span class="abtn" aria-hidden="true"><i></i><i></i></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRY IT -->
+  <section class="sec" id="try" aria-labelledby="try-h">
+    <div class="wrap">
+      <div class="land">
+        <p class="eyebrow" style="--c:var(--mint)">Try it</p>
+        <h2 class="h" id="try-h">Three builds you can play today.</h2>
+        <p class="lede">Each takes about five minutes. Headphones help.</p>
+      </div>
+      <div class="carts">
+        <article class="cart land" style="--r:-2deg;--c:var(--blue)">
+          <span class="sticky">start here!</span>
+          <div class="label" style="color:#fff"><span class="tag" style="background:#fff;color:var(--ink)">Preliminary test</span><h3>Focus check</h3></div>
+          <div class="body">
+            <p>Three rooms, about five minutes. A story read over rising classroom chatter, instructions that get interrupted, then something long and dull while gossip competes. It sets itself to the player’s age.</p>
+            <a class="btn" data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Take the check</a>
+          </div>
+          <div class="grooves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="cart land" style="--r:1.5deg;--c:var(--orange)">
+          <div class="label"><span class="tag">Prototype</span><h3>Listening levels</h3></div>
+          <div class="body">
+            <p>Five five-minute places (a mall, a theme park, a football field, a science lab and an office) plus a skills mode that trains noise filtering, instruction tracking and focus stamina one at a time.</p>
+            <a class="btn orange" data-site="/play/" href="https://attuneonline.com/play/">Play the levels</a>
+          </div>
+          <div class="grooves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="cart land" style="--r:-1deg;--c:var(--lilac)">
+          <div class="label"><span class="tag">Beta · itch.io</span><h3>Beta levels</h3></div>
+          <div class="body">
+            <p>Where Attune started: themed worlds (space, sky, fantasy, Jurassic) unlocked one at a time. The idea has since narrowed onto listening in the ordinary noisy places children actually have to listen in.</p>
+            <a class="btn lilac" href="https://bibyeo.itch.io/attuneonline" target="_blank" rel="noopener">Open on itch.io</a>
+          </div>
+          <div class="grooves" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHERE IT IS HEADING -->
+  <section class="sec" id="heading" aria-labelledby="heading-h" style="padding-top:0">
+    <div class="wrap split flip">
+      <div class="charm land" style="--r:5deg;width:min(340px,76%)">
+        <img class="sticker" src="assets/dog.png" alt="A pixel-art classmate in a tuxedo, as a sticker">
+        <div class="note" style="right:-34%;bottom:-4%;transform:rotate(-4deg)"><span class="hand">new classmates<br>coming soon!</span></div>
+      </div>
+      <div class="land">
+        <p class="eyebrow" style="--c:var(--yellow)">Where it is heading</p>
+        <h2 class="h" id="heading-h">From grey boxes to rooms worth <span class="under" style="--c:var(--mint)">sitting in</span>.</h2>
+        <p class="lede">The finished game moves from grey-box prototypes to warm, characterful rooms: a classroom with a crocodile teacher, pixel-art classmates, and plenty going on at the edges.</p>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="polaroids">
+        <div class="pol land" style="--r:-3deg;--c:#FCE3EE"><div class="shot"><img src="assets/charm_flower.png" alt=""></div><h3>A room worth sitting in</h3><p>Characters children want to listen to, so staying with a long instruction feels like part of the story rather than a test.</p></div>
+        <div class="pol land" style="--r:2deg;--c:#E1EDFF"><div class="shot"><img src="assets/charm_gem.png" alt=""></div><h3>Distraction you can see</h3><p>The things competing for attention are drawn into the scene, not just mixed into the audio, so a child can tell what pulled them away.</p></div>
+        <div class="pol land" style="--r:-1.5deg;--c:#E6F5EC"><div class="shot"><img src="assets/charm_plane.png" alt=""></div><h3>One continuous line</h3><p>The art comes from the first build, the missions and scoring from the prototypes you can play today. Nothing here starts over.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT IS FOR -->
+  <section class="sec" id="who" aria-labelledby="who-h" style="background:rgba(255,255,255,.28)">
+    <div class="wrap split">
+      <div class="land">
+        <p class="eyebrow" style="--c:var(--sky)">Who it is for</p>
+        <h2 class="h" id="who-h">For kids who find listening hard. <span class="pop" style="--c:var(--orange)">Diagnosis or not.</span></h2>
+        <p class="lede">Attune is being designed for children who find listening and staying with instructions difficult, including children with ADHD and children without a diagnosis.</p>
+        <p>Attention differs from child to child, and nothing here assumes every child’s needs are the same.</p>
+      </div>
+      <div class="notes">
+        <div class="stickynote land" style="--r:-3deg;--c:#FFE98A"><b>Parents</b><p>See what a session asks your child to do before they play.</p></div>
+        <div class="stickynote land" style="--r:2deg;--c:#C9E9FF"><b>Teachers</b><p>Understand the game and try it with a class.</p></div>
+        <div class="stickynote land" style="--r:1.5deg;--c:#FFD0E6"><b>Clinicians</b><p>Send feedback from a clinic, or ask about trying it with us.</p></div>
+        <div class="stickynote land" style="--r:-2deg;--c:#CDEFD9"><b>Kids</b><p>Five minutes, headphones on, and a room full of characters.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR PARENTS -->
+  <section class="sec" id="parents" aria-labelledby="parents-h" style="padding-top:0">
+    <div class="wrap">
+      <div class="parents-teaser land">
+        <div>
+          <p class="eyebrow" style="--c:var(--orange)">For parents</p>
+          <h2 class="h" id="parents-h">Could it be <span class="pop" style="--c:var(--orange-2)">more than</span> not listening?</h2>
+          <p class="lede">Inattention is quiet and easy to miss. Walk through an ordinary day, spot twelve signs, and see what it can feel like from your child’s side, and what it can do to friendships and family life.</p>
+          <div class="row" style="margin-top:22px"><a class="btn orange" href="parents/">Spot the signs</a></div>
+        </div>
+        <div class="peek" aria-hidden="true">
+          <div class="peekcard" style="--r:-4deg;--c:#FFE9B8"><span>7:30</span><b>Only one shoe on</b></div>
+          <div class="peekcard" style="--r:3deg;--c:#DCEBFF"><span>9:00</span><b>Didn’t hear the instruction</b></div>
+          <div class="peekcard" style="--r:-2deg;--c:#DDF3E4"><span>12:30</span><b>Sitting alone</b></div>
+          <div class="peekcard" style="--r:4deg;--c:#E8E2FF"><span>19:30</span><b>“I’m stupid”</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section class="sec" id="research" aria-labelledby="research-h">
+    <div class="wrap">
+      <div class="notebook land">
+        <p class="eyebrow" style="--c:var(--pink)">Research</p>
+        <h2 class="honest" id="research-h">The research gives Attune a starting point for design. It does <em>not</em> establish that this game treats ADHD.</h2>
+        <p class="lede" style="line-height:32px">Research describes attention as staying with a task, selecting what matters, and shifting focus when needed. Attune uses those ideas to design listening games. Evidence about attention training is mixed, and we would rather say so here than oversell it.</p>
+        <p>Before making stronger claims, we plan to check whether children enjoy the tasks, improve on new listening challenges, and show any meaningful changes outside the game.</p>
+        <a class="link" href="research/">Read what informs Attune →</a>
+        <span class="margin-note hand">honest &gt; hype</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="contact">
+  <div class="stars" aria-hidden="true">
+    <span style="--c:var(--yellow);left:8%;top:18%;--dl:0s"></span><span style="--c:var(--pink);left:86%;top:14%;--dl:.8s"></span>
+    <span style="--c:var(--sky);left:72%;top:46%;--dl:1.6s"></span><span style="--c:var(--mint);left:40%;top:10%;--dl:2.2s"></span>
+    <span style="--c:var(--lilac);left:94%;top:62%;--dl:1.1s"></span>
+  </div>
+  <div class="wrap">
+    <p class="big">Headphones on? <span>Let’s play.</span></p>
+    <div class="row">
+      <a class="btn" data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Take the focus check</a>
+      <a class="btn orange" data-site="/play/" href="https://attuneonline.com/play/">Play the levels</a>
+    </div>
+    <div class="cols">
+      <div><img class="logo" src="assets/logo_symbol.png" alt="Attune"><p>Attention practice that children actually want to open. In development in Auckland, New Zealand.</p></div>
+      <div><h4>Play</h4><ul><li><a data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Focus check</a></li><li><a data-site="/play/" href="https://attuneonline.com/play/">Listening levels</a></li><li><a href="https://bibyeo.itch.io/attuneonline" target="_blank" rel="noopener">Beta on itch.io ↗</a></li></ul></div>
+      <div><h4>About</h4><ul><li><a href="index.html#mission">Mission</a></li><li><a href="index.html#game">The game</a></li><li><a href="parents/">For parents</a></li><li><a href="research/">Research</a></li></ul></div>
+      <div><h4>Say hello</h4><p style="margin-bottom:10px">Questions, feedback from a class or a clinic, or anything you would like to try with us.</p><button class="copy-email" type="button" data-email>Email us →</button></div>
+    </div>
+    <div class="base"><span>© 2026 Attune</span><span>Attune is a game, not a diagnostic test.</span></div>
+  </div>
+</footer>
+
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="toys3d.js"></script>
+<script src="site.js"></script>
+<script>
+/* Where the brooches go. Replace '' with real URLs when the pages exist. */
+const LINKS = { attention: '/focus-check/', info: '#mission' };
+const BROOCH = { plaqueA: ['attention', 'Attention Test'], plaqueB: ['info', 'More Info'] };
+
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.getElementById('root'), stage = document.getElementById('stage');
+const logo = document.getElementById('logo');
+const SW = 1536, SH = 1024;
+let S = 1, OX = 0, OY = 0;
+function fit(){
+  const vw = root.clientWidth, vh = root.clientHeight, a = vw / vh;
+  if (a >= 1.05){ S = Math.max(vw/SW, vh/SH); OX = (vw - SW*S)/2; OY = (vh - SH*S)/2; }
+  else { S = vw / 1010; OX = vw/2 - 800*S; OY = Math.max(0, (vh - SH*S)/2 - 10); }
+  stage.style.transform = `translate(${OX}px, ${OY}px) scale(${S})`;
+  document.body.classList.toggle('tall', a < 1.05);
+}
+addEventListener('resize', fit); fit();
+/* header goes solid past the desk; the 3D pauses while it is off screen */
+const headerEl = document.querySelector('header');
+addEventListener('scroll', ()=>{ headerEl.classList.toggle('solid', scrollY > root.clientHeight - 90); }, { passive: true });
+let heroVisible = true;
+new IntersectionObserver(([e])=>{ heroVisible = e.isIntersecting; if (!revealed) return; if (heroVisible) AttuneToys.start(); else AttuneToys.stop(); }).observe(root);
+
+/* logo fades away while people play, and back once things settle */
+let busyTimer;
+function markBusy(){ root.classList.add('busy'); clearTimeout(busyTimer); busyTimer = setTimeout(()=>root.classList.remove('busy'), 1800); }
+
+let toastTimer;
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2600); }
+function activate(key){
+  const target = LINKS[BROOCH[key][0]];
+  if (target.startsWith('#')){ setTimeout(()=>document.querySelector(target).scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' }), 150); return; }
+  const onSite = /(^|\.)attuneonline\.com$/.test(location.hostname);
+  setTimeout(()=>{ if (onSite) location.href = target; else { const a = document.createElement('a'); a.href = 'https://attuneonline.com' + target; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); } }, 200);
+}
+
+/* keyboard access to the two brooches */
+function placeKbd(){
+  for (const [id, key] of [['kA', 'plaqueA'], ['kB', 'plaqueB']]){
+    const r = AttuneToys.project(key), el = document.getElementById(id); if (!r) continue;
+    Object.assign(el.style, { left: r.x + 'px', top: r.y + 'px', width: r.w + 'px', height: r.h + 'px' });
+    el.onclick = e=>{ e.preventDefault(); AttuneToys.nudge(key); activate(key); };
+  }
+}
+/* prompt copy follows the input device */
+(function(){
+  const how = document.getElementById('pickupHow');
+  if (how && !matchMedia('(hover: hover) and (pointer: fine)').matches) how.textContent = 'drag them with your finger';
+  document.querySelectorAll('#pickup .ink').forEach(p=>{ const L = p.getTotalLength(); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+})();
+
+/* ------------------------------------------------ 3D toys + opening */
+const toysCanvas = document.getElementById('toys');
+let toysReady = false, revealed = false;
+AttuneToys.init({
+  canvas: toysCanvas, base: 'assets/',
+  onBusy: markBusy,
+  onTouch: ()=>{ root.classList.add('touched'); document.body.classList.add('touched-body'); },
+  onBrooch: key=>activate(key),
+}).then(()=>{ toysReady = true; document.body.classList.remove('waiting'); root.classList.add('ready'); playIntro(); })
+  .catch(err=>{ console.error(err); document.body.classList.remove('waiting'); toast('The toys could not load on this device.'); });
+document.body.classList.add('waiting');
+
+function reveal(){
+  if (revealed) return; revealed = true;
+  toysCanvas.style.transform = ''; toysCanvas.style.filter = '';
+  root.classList.add('header-in', 'live'); document.body.classList.add('live-body');
+  AttuneToys.start(); placeKbd();
+  if (REDUCED){ logo.classList.add('shown'); return; }
+  logo.classList.remove('in', 'shown'); void logo.offsetWidth; logo.classList.add('in');
+  logo.addEventListener('animationend', ()=>{ logo.classList.remove('in'); logo.classList.add('shown'); }, { once: true });
+}
+function playIntro(){
+  if (!toysReady) return;
+  revealed = false;
+  root.classList.remove('header-in', 'live', 'busy'); document.body.classList.remove('live-body'); logo.classList.remove('in', 'shown');
+  if (REDUCED){ AttuneToys.skipIntro(); reveal(); return; }
+  // the camera starts close and out of focus, then pulls back as the toys land
+  AttuneToys.intro({
+    onFrame: (fr, k, focus)=>{
+      toysCanvas.style.transform = k < 1 ? `scale(${(1.6 - .6*k).toFixed(4)})` : '';
+      if (fr > 72) root.classList.add('header-in');
+    },
+    onDone: reveal,
+  });
+}
+document.getElementById('replay').addEventListener('click', ()=>{ AttuneToys.stop(); playIntro(); });
+
+/* ------------------------------------------------ dust in the window light */
+const cv = document.getElementById('dust'), g = cv.getContext('2d');
+const motes = Array.from({length: 70}, ()=>({ x: Math.random()*1536, y: Math.random()*1024, r: .6 + Math.random()*1.8,
+  vx: (Math.random()-.3)*.12, vy: -.05 - Math.random()*.12, p: Math.random()*6.28 }));
+let lastT = performance.now();
+function tick(t){
+  const dt = Math.min(50, t - lastT); lastT = t;
+  if (root.classList.contains('live') && !document.hidden){
+    g.clearRect(0, 0, 1536, 1024);
+    for (const m of motes){
+      m.x += m.vx*dt*.06; m.y += m.vy*dt*.06 + Math.sin(t/1400 + m.p)*.05;
+      if (m.y < -10){ m.y = 1030; m.x = Math.random()*1536; } if (m.x > 1546) m.x = -10; if (m.x < -10) m.x = 1546;
+      const a = Math.max(0, 1 - Math.abs((m.x*0.5 - m.y) + 60)/380) * (.3 + .3*Math.sin(t/900 + m.p*3));
+      if (a <= .02) continue;
+      g.fillStyle = `rgba(255,244,222,${a.toFixed(3)})`; g.beginPath(); g.arc(m.x, m.y, m.r, 0, 6.283); g.fill();
+    }
+  }
+  requestAnimationFrame(tick);
+}
+if (!REDUCED) requestAnimationFrame(tick);
+</script>
+
+</body>
+</html>
