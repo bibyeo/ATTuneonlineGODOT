@@ -176,8 +176,9 @@
       <a href="#mission">Mission</a>
       <a href="#try">Try it</a>
       <a href="#game">The game</a>
-      <a href="parents/">For parents</a>
-      <a href="research/">Research</a>
+      <a href="parents/index.html">For parents</a>
+      <a href="portal/index.html">Parent portal</a>
+      <a href="research/index.html">Research</a>
     </nav>
     <a class="cta" data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Take the focus check&nbsp;→</a>
   </header>
@@ -340,7 +341,7 @@
           <p class="eyebrow" style="--c:var(--orange)">For parents</p>
           <h2 class="h" id="parents-h">Could it be <span class="pop" style="--c:var(--orange-2)">more than</span> not listening?</h2>
           <p class="lede">Inattention is quiet and easy to miss. Walk through an ordinary day, spot twelve signs, and see what it can feel like from your child’s side, and what it can do to friendships and family life.</p>
-          <div class="row" style="margin-top:22px"><a class="btn orange" href="parents/">Spot the signs</a></div>
+          <div class="row" style="margin-top:22px"><a class="btn orange" href="parents/index.html">Spot the signs</a></div>
         </div>
         <div class="peek" aria-hidden="true">
           <div class="peekcard" style="--r:-4deg;--c:#FFE9B8"><span>7:30</span><b>Only one shoe on</b></div>
@@ -360,7 +361,7 @@
         <h2 class="honest" id="research-h">The research gives Attune a starting point for design. It does <em>not</em> establish that this game treats ADHD.</h2>
         <p class="lede" style="line-height:32px">Research describes attention as staying with a task, selecting what matters, and shifting focus when needed. Attune uses those ideas to design listening games. Evidence about attention training is mixed, and we would rather say so here than oversell it.</p>
         <p>Before making stronger claims, we plan to check whether children enjoy the tasks, improve on new listening challenges, and show any meaningful changes outside the game.</p>
-        <a class="link" href="research/">Read what informs Attune →</a>
+        <a class="link" href="research/index.html">Read what informs Attune →</a>
         <span class="margin-note hand">honest &gt; hype</span>
       </div>
     </div>
@@ -382,7 +383,7 @@
     <div class="cols">
       <div><img class="logo" src="assets/logo_symbol.png" alt="Attune"><p>Attention practice that children actually want to open. In development in Auckland, New Zealand.</p></div>
       <div><h4>Play</h4><ul><li><a data-site="/focus-check/" href="https://attuneonline.com/focus-check/">Focus check</a></li><li><a data-site="/play/" href="https://attuneonline.com/play/">Listening levels</a></li><li><a href="https://bibyeo.itch.io/attuneonline" target="_blank" rel="noopener">Beta on itch.io ↗</a></li></ul></div>
-      <div><h4>About</h4><ul><li><a href="index.html#mission">Mission</a></li><li><a href="index.html#game">The game</a></li><li><a href="parents/">For parents</a></li><li><a href="research/">Research</a></li></ul></div>
+      <div><h4>About</h4><ul><li><a href="index.html#mission">Mission</a></li><li><a href="index.html#game">The game</a></li><li><a href="parents/index.html">For parents</a></li><li><a href="research/index.html">Research</a></li></ul></div>
       <div><h4>Say hello</h4><p style="margin-bottom:10px">Questions, feedback from a class or a clinic, or anything you would like to try with us.</p><button class="copy-email" type="button" data-email>Email us →</button></div>
     </div>
     <div class="base"><span>© 2026 Attune</span><span>Attune is a game, not a diagnostic test.</span></div>
@@ -426,9 +427,9 @@ let toastTimer;
 function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2600); }
 function activate(key){
   const target = LINKS[BROOCH[key][0]];
-  if (target.startsWith('#')){ setTimeout(()=>document.querySelector(target).scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' }), 150); return; }
+  if (target.startsWith('#')){ document.querySelector(target).scrollIntoView({ behavior: 'instant' }); return; }
   const onSite = /(^|\.)attuneonline\.com$/.test(location.hostname);
-  setTimeout(()=>{ if (onSite) location.href = target; else { const a = document.createElement('a'); a.href = 'https://attuneonline.com' + target; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); } }, 200);
+  if (onSite) location.href = target; else { const a = document.createElement('a'); a.href = 'https://attuneonline.com' + target; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); }
 }
 
 /* keyboard access to the two brooches */
